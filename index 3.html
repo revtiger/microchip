@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MICROCHIP</title>
+    <style>
+        @keyframes halftone {
+            0% { filter: url(#halftone); opacity: 1; transform: translateY(0) scale(1); }
+            50% { filter: none; opacity: 0; transform: translateY(-30px) scale(1.1); }
+            100% { filter: url(#halftone); opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: black;
+            color: white;
+            font-family: "Times New Roman", Times, serif;
+            text-align: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .microchip {
+            color: red;
+            font-size: 50px;
+            position: absolute;
+            animation: halftone 3s infinite alternate;
+        }
+
+        #contador {
+            font-size: 30px;
+            position: absolute;
+            bottom: 80px;
+        }
+
+        #link-final {
+            display: none;
+            position: absolute;
+            bottom: 20px;
+        }
+
+        #link-final a {
+            color: yellow;
+            font-size: 20px;
+            text-decoration: none;
+            border: 1px solid yellow;
+            padding: 10px;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        #link-final a:hover {
+            background-color: yellow;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <svg width="0" height="0">
+        <defs>
+            <filter id="halftone">
+                <feTurbulence type="turbulence" baseFrequency="0.1" numOctaves="2" result="turbulence"/>
+                <feDisplacementMap in2="turbulence" in="SourceGraphic" scale="20" />
+            </filter>
+        </defs>
+    </svg>
+
+    <div id="contenedor-textos"></div>
+
+    <div id="contador">Cargando...</div>
+    <div id="link-final">
+        <a href="https://www.ejemplo.com" target="_blank">Haz clic aquí</a>
+    </div>
+
+    <script>
+        // Generar múltiples textos "MICROCHIP"
+        function crearTextosMicrochip() {
+            const contenedor = document.getElementById("contenedor-textos");
+            for (let i = 0; i < 6; i++) { // Cambia el número para más o menos textos
+                let texto = document.createElement("div");
+                texto.classList.add("microchip");
+                texto.textContent = "MICROCHIP";
+
+                // Posiciones aleatorias dentro de la pantalla
+                texto.style.top = `${Math.random() * 80 + 10}vh`;
+                texto.style.left = `${Math.random() * 80 + 10}vw`;
+
+                // Variar el tiempo de animación para cada uno
+                texto.style.animationDuration = `${Math.random() * 3 + 2}s`;
+
+                contenedor.appendChild(texto);
+            }
+        }
+
+        crearTextosMicrochip();
+
+        // Contador hasta el domingo a las 14:00 hs
+        function actualizarContador() {
+            const ahora = new Date();
+            const fin = new Date();
+            fin.setDate(fin.getDate() + (7 - fin.getDay()) % 7); // Próximo domingo
+            fin.setHours(14, 0, 0, 0); // 14:00 hs
+
+            const diferencia = fin - ahora;
+            if (diferencia <= 0) {
+                document.getElementById("contador").textContent = "Tiempo finalizado";
+                document.getElementById("link-final").style.display = "block";
+                return;
+            }
+
+            const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+            const horas = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutos = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
+            const segundos = Math.floor((diferencia % (1000 * 60)) / 1000);
+
+            document.getElementById("contador").textContent = 
+                `${dias}d ${horas}h ${minutos}m ${segundos}s`;
+        }
+
+        setInterval(actualizarContador, 1000);
+        actualizarContador();
+    </script>
+</body>
+</html>
